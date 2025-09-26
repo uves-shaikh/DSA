@@ -2,48 +2,134 @@
 using namespace std;
 
 /**
- * @brief Rearranges an array so that positive and negative numbers
+ * @brief Brute Force: Rearranges array so that positives and negatives
  *        alternate, starting with a positive number.
  *
- * @param nums Reference to the input array (modified in place).
+ * Steps:
+ * 1. Split positives and negatives into two separate arrays.
+ * 2. Fill positives at even indices, negatives at odd indices.
  *
- * Example:
- * Input:  {3, 1, -2, -5, 2, -4}
- * Output: {3, -2, 1, -5, 2, -4}
+ * @param nums Input array (unchanged).
+ * @return Rearranged array.
  *
  * Time Complexity: O(n)
- * Space Complexity: O(n)  (uses extra arrays for positives/negatives)
+ * Space Complexity: O(n)
  */
-void rearrangeArrayBySign(vector<int> &nums)
+vector<int> rearrangeArrayBySignWithBrute(vector<int> &nums)
 {
     vector<int> posArray; // stores positive numbers
     vector<int> negArray; // stores negative numbers
     int n = nums.size();
 
-    // Separate positives and negatives
+    // Step 1: Separate positives and negatives
     for (int i = 0; i < n; i++)
     {
         if (nums[i] >= 0) // treat 0 as positive
-        {
             posArray.push_back(nums[i]);
+        else
+            negArray.push_back(nums[i]);
+    }
+
+    // Step 2: Place them alternately in result
+    vector<int> result(n);
+    for (int i = 0; i < posArray.size(); i++)
+        result[i * 2] = posArray[i];
+
+    for (int i = 0; i < negArray.size(); i++)
+        result[i * 2 + 1] = negArray[i];
+
+    return result;
+}
+
+/**
+ * @brief Better Approach: Uses two running indices (posIndex and negIndex)
+ *        to directly place elements at correct positions.
+ *
+ * @param nums Input array (unchanged).
+ * @return Rearranged array.
+ *
+ * Time Complexity: O(n)
+ * Space Complexity: O(n)
+ */
+vector<int> rearrangeArrayBySignWithBetter(vector<int> &nums)
+{
+    int n = nums.size();
+    vector<int> result(n, 0);
+
+    int posIndex = 0; // next position for positive
+    int negIndex = 1; // next position for negative
+
+    for (int i = 0; i < n; i++)
+    {
+        if (nums[i] < 0)
+        {
+            result[negIndex] = nums[i];
+            negIndex += 2;
         }
         else
         {
-            negArray.push_back(nums[i]);
+            result[posIndex] = nums[i];
+            posIndex += 2;
         }
     }
 
-    // Fill positive numbers at even indices (0, 2, 4, ...)
-    for (int i = 0; i < posArray.size(); i++)
+    return result;
+}
+
+/**
+ * @brief Alternative Better Variant: Similar to above, but uses
+ *        while-loops instead of single-pass for extra flexibility.
+ *
+ * ⚠️ Fix applied: Index conditions should be < n (not < 2*n).
+ *
+ * @param nums Input array (unchanged).
+ * @return Rearranged array.
+ *
+ * Time Complexity: O(n)
+ * Space Complexity: O(n)
+ */
+vector<int> rearrangeArrayBySignWithBetterAnotherVariant(vector<int> &nums)
+{
+    int n = nums.size();
+    vector<int> result(n, 0);
+
+    int posIndex = 0;
+    int negIndex = 1;
+    int i = 0;
+
+    // Place positives and negatives alternately
+    while (i < n && posIndex < n && negIndex < n)
     {
-        nums[i * 2] = posArray[i];
+        if (nums[i] < 0)
+        {
+            result[negIndex] = nums[i];
+            negIndex += 2;
+        }
+        else
+        {
+            result[posIndex] = nums[i];
+            posIndex += 2;
+        }
+        i++;
     }
 
-    // Fill negative numbers at odd indices (1, 3, 5, ...)
-    for (int i = 0; i < negArray.size(); i++)
+    // Fill any remaining positives
+    while (i < n && posIndex < n)
     {
-        nums[(i * 2) + 1] = negArray[i];
+        result[posIndex] = nums[i];
+        posIndex += 2;
+        i++;
     }
+
+    // Fill any remaining negatives
+    while (i < n && negIndex < n)
+    {
+        result[negIndex] = nums[i];
+        negIndex += 2;
+        i++;
+    }
+
+    return result;
 }
 
 int main()
@@ -52,7 +138,6 @@ int main()
     cout << "Enter size of array (must be positive and even): ";
     cin >> n;
 
-    // ✅ Fix: input validation should use OR (||), not AND (&&)
     if (n <= 0 || (n % 2 != 0))
     {
         cout << "Array size must be positive and even." << endl;
@@ -66,13 +151,14 @@ int main()
         cin >> nums[i];
     }
 
-    rearrangeArrayBySign(nums);
+    // Choose the approach to test:
+    // vector<int> result = rearrangeArrayBySignWithBrute(nums);
+    // vector<int> result = rearrangeArrayBySignWithBetter(nums);
+    vector<int> result = rearrangeArrayBySignWithBetterAnotherVariant(nums);
 
     cout << "Rearranged array: ";
     for (int i = 0; i < n; i++)
-    {
-        cout << nums[i] << " ";
-    }
+        cout << result[i] << " ";
     cout << endl;
 
     return 0;
