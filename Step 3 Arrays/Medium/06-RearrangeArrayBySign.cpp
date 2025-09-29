@@ -80,8 +80,6 @@ vector<int> rearrangeArrayBySignWithBetter(vector<int> &nums)
  * @brief Alternative Better Variant: Similar to above, but uses
  *        while-loops instead of single-pass for extra flexibility.
  *
- * ⚠️ Fix applied: Index conditions should be < n (not < 2*n).
- *
  * @param nums Input array (unchanged).
  * @return Rearranged array.
  *
