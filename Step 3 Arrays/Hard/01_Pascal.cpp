@@ -57,27 +57,12 @@ vector<long long> kthRowWithOptimal(int k)
     return result;
 }
 
-// Print Pascal’s Triangle up to row n
+// Generate Pascal’s Triangle up to row n
 vector<vector<long long>> printPascal(int n)
 {
     vector<vector<long long>> result;
-
-    for (int i = 0; i < n; i++)
-    {
-        vector<long long> temp;
-        long long val = 1;
-        temp.push_back(val);
-
-        for (int j = 1; j <= i; j++)
-        {
-            val = val * (i - j + 1);
-            val = val / j;
-            temp.push_back(val);
-        }
-
-        result.push_back(temp);
-    }
-
+    for (int i = 1; i <= n; i++)
+        result.push_back(kthRowWithOptimal(i));
     return result;
 }
 
@@ -93,12 +78,22 @@ int main()
         return 1;
     }
 
+    cout << "\nRow " << n << " of Pascal’s Triangle:\n";
     vector<long long> result = kthRowWithOptimal(n);
-
-    cout << "Row " << n << " of Pascal’s Triangle:\n";
     for (long long val : result)
         cout << val << " ";
     cout << endl;
+
+    cout << "\nFull Pascal’s Triangle up to row " << n << ":\n";
+    vector<vector<long long>> triangle = printPascal(n);
+
+    for (int i = 0; i < triangle.size(); i++)
+    {
+        cout << string(n - i, ' '); // spacing for pyramid
+        for (long long val : triangle[i])
+            cout << val << " ";
+        cout << endl;
+    }
 
     return 0;
 }
