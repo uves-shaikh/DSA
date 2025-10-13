@@ -44,11 +44,6 @@ int maximumProduct(vector<int> &arr, int n)
     return ans;
 }
 
-/**
- * @brief Driver function to compute and display the maximum product subarray.
- *
- * Handles user input, validates array size, and displays the final result.
- */
 int main()
 {
     int n;
